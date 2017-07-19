@@ -278,8 +278,8 @@ class waftoolsengine:
             self.log.critical("Proxy disabled: %s" % e)
             self.proxy = NullProxy()
 
-    def request(self, method='GET', path=None, usecache=False,
-                cacheresponse=False, headers=None,
+    def request(self, method='GET', path=None, usecache=True,
+                cacheresponse=True, headers=None,
                 comingfromredir=False,
                 target=None):
         followredirect = self.followredirect
@@ -308,15 +308,19 @@ class waftoolsengine:
             headers['Accept-Charset'] = 'ISO-8859-1,utf-8;q=0.7,*;q=0.7'
         if not 'accept' in knownheaders:
             headers['Accept'] = '*/*'
-        k = str([method, path, headers])
+
+        k = str([method, path, headers, self.port, target])
+        found_in_cache = False
         if usecache:
             if k in self.cachedresponses.keys():
                 self.log.debug('Using cached version of %s, %s' % (method, path))
-                return self.cachedresponses[k]
+                resp = self.cachedresponses[k]
+                found_in_cache = True
             else:
                 self.log.debug('%s not found in %s' % (k, self.cachedresponses.keys()))
 
-        resp = self._request(method, path, headers, target)
+        if not found_in_cache:
+            resp = self._request(method, path, headers, target)
 
         if cacheresponse:
             self.cachedresponses[k] = resp
