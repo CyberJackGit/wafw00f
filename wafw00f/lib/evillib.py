@@ -363,7 +363,6 @@ class waftoolsengine:
                 import ssl as ssllib
                 params['context'] = ssllib._create_unverified_context()
             h = conn_factory(connect_host, connect_port, **params)
-            print(connect_host, connect_port, path, params)
             if self.ssl and isinstance(self.proxy, HttpProxy):
                 import ssl as ssllib
                 h.set_tunnel("%s:%s" % (self.target, self.port))
