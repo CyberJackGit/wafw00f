@@ -339,7 +339,7 @@ class waftoolsengine:
                                 target = self.target
                             if not path.startswith('/'):
                                 path = '/' + path
-                            if target.replace('www.', '') != self.target.replace('www.', ''):
+                            if re.sub('^www.', '', target) != re.sub('^www.', '', self.target):
                                 self.log.warn('Tried to redirect to a different server %s' % newloc)
                             self.ssl = ssl
                             self.port = port
